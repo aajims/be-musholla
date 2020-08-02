@@ -18,7 +18,7 @@ class KeuanganController extends Controller
 
     public function index()
     {
-        $uang = Keuangan::orderBy('created_at', 'DESC');
+        $uang = Keuangan::orderBy('created_at', 'DESC')->get();
         $response=[
             'status'=>'success',
             'message'=>'Keuangan list',
@@ -30,7 +30,7 @@ class KeuanganController extends Controller
 
     public function list()
     {
-        $uang = Keuangan::orderBy('created_at', 'DESC');
+        $uang = Keuangan::orderBy('created_at', 'DESC')->get();
         $response=[
             'status'=>'success',
             'message'=>'Keuangan list',
