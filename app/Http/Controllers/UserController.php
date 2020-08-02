@@ -47,7 +47,7 @@ class UserController extends Controller
         $user = User::create([
             'name'=>$request->input('name'),
             'email'=>$request->input('email'),
-            'password'=>$request->input('password'),
+            'password'=>Hash::make($request->input('password')),
             'telpon'=>$request->input('telpon'),
             'level'=>$request->input('level'),
          ]);
@@ -71,19 +71,21 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-    		'name'=>'name',
+    		'name'=>'required',
     		'email'=>'required|email',
     		'password'=>'required',
     		'telp'=>'required',
     		'level'=>'required',
          ]);
-         $user = User::where('id',$id)->update([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>$request->password,
-            'telp'=>$request->telp,
-            'level'=>$request->level,
-         ]);
+         $user = User::where('id',$id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if (!empty($this->password)) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->telp = $request->telp;
+        $user->level = $request->level;
+         $user->update();
          if($user){
             $response=[
                 'status'=>'success',
