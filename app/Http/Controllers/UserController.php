@@ -38,7 +38,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-    		'name'=>'name',
+    		'name'=>'required',
     		'email'=>'required|email',
     		'password'=>'required',
     		'telpon'=>'required',
