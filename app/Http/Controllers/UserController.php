@@ -48,7 +48,7 @@ class UserController extends Controller
             'name'=>$request->input('name'),
             'email'=>$request->input('email'),
             'password'=>$request->input('password'),
-            'telpon'=>$request->input('telp'),
+            'telpon'=>$request->input('telpon'),
             'level'=>$request->input('level'),
          ]);
 
