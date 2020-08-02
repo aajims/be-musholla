@@ -73,8 +73,7 @@ class UserController extends Controller
         $this->validate($request, [
     		'name'=>'required',
     		'email'=>'required|email',
-    		'password'=>'required',
-    		'telp'=>'required',
+    		'telpon'=>'required',
     		'level'=>'required',
          ]);
          $user = User::where('id',$id);
@@ -83,7 +82,7 @@ class UserController extends Controller
         if (!empty($this->password)) {
             $user->password = Hash::make($request->password);
         }
-        $user->telp = $request->telp;
+        $user->telpon = $request->telpon;
         $user->level = $request->level;
          $user->update();
          if($user){
