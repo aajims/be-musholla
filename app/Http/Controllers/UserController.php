@@ -84,8 +84,7 @@ class UserController extends Controller
         }
         $user->telpon = $request->telpon;
         $user->level = $request->level;
-         $user->update();
-         if($user){
+         if($user->save()){
             $response=[
                 'status'=>'success',
                 'message'=>'User created Success',
