@@ -15,7 +15,8 @@ class UserController extends Controller
  
     public function index()
     {
-        $head = User::orderBy('created_at', 'DESC')->paginate(10);
+        // $head = User::orderBy('created_at', 'DESC')->paginate(10);
+        $head = User::orderBy('created_at', 'DESC')->get();
         $response=[
             'status'=>'success',
             'message'=>'User Data list',
