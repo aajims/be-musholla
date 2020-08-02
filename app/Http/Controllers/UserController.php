@@ -41,14 +41,14 @@ class UserController extends Controller
     		'name'=>'name',
     		'email'=>'required|email',
     		'password'=>'required',
-    		'telp'=>'required',
+    		'telpon'=>'required',
     		'level'=>'required',
          ]);
         $user = User::create([
             'name'=>$request->input('name'),
             'email'=>$request->input('email'),
             'password'=>$request->input('password'),
-            'telp'=>$request->input('telp'),
+            'telpon'=>$request->input('telp'),
             'level'=>$request->input('level'),
          ]);
 
