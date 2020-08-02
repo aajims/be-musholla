@@ -76,7 +76,7 @@ class UserController extends Controller
     		'telpon'=>'required',
     		'level'=>'required',
          ]);
-         $user = User::where('id',$id);
+         $user = User::find($id);
         $user->name = $request->name;
         $user->email = $request->email;
         if (!empty($this->password)) {
@@ -84,7 +84,8 @@ class UserController extends Controller
         }
         $user->telpon = $request->telpon;
         $user->level = $request->level;
-         if($user->save()){
+
+        if($user->save()){
             $response=[
                 'status'=>'success',
                 'message'=>'User created Success',
