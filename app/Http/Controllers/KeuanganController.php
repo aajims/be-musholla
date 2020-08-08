@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Keuangan;
 use Illuminate\Http\Request;
+use App\Helpers\UserHelper;
+
 
 class KeuanganController extends Controller
 {
@@ -13,18 +15,18 @@ class KeuanganController extends Controller
      */
     public function __construct()
     {
-        //
+        // UserHelper::can(['admin', 'bendahara']);
     }
 
     public function index()
     {
+        UserHelper::can(['admin', 'bendahara']);
         $uang = Keuangan::orderBy('created_at', 'DESC')->get();
         $response=[
             'status'=>'success',
             'message'=>'Keuangan list',
             'data' => $uang,
         ];
-
         return response()->json($response, 200);
     }
 
@@ -42,6 +44,7 @@ class KeuanganController extends Controller
 
     public function show($id)
     {
+        UserHelper::can(['admin', 'bendahara']);
         $uang = Keuangan::findOrFail($id);
         $response=[
             'status'=>'success',
@@ -52,6 +55,7 @@ class KeuanganController extends Controller
 
     public function store(Request $request)
     {
+        UserHelper::can(['admin', 'bendahara']);
         $this->validate($request, [
     		'tanggal'=>'required',
     		'uraian'=>'required',
@@ -86,6 +90,7 @@ class KeuanganController extends Controller
 
     public function update(Request $request, $id)
     {
+        UserHelper::can(['admin', 'bendahara']);
         $this->validate($request, [
     		'tanggal'=>'required',
     		'uraian'=>'required',
@@ -119,6 +124,7 @@ class KeuanganController extends Controller
 
     public function delete($id)
     {
+        UserHelper::can(['admin', 'bendahara']);
         $head = Keuangan::find($id);
         if(!$head){
             $data = [

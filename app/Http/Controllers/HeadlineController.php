@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Headline;
 use Illuminate\Http\Request;
+use DB;
+use App\Helpers\UserHelper;
 
 class HeadlineController extends Controller
 {
@@ -18,6 +20,7 @@ class HeadlineController extends Controller
 
     public function index()
     {
+        UserHelper::can(['admin', 'staff']);
         $head = Headline::all();
         $response =[
             'status'=>'success',
@@ -38,6 +41,26 @@ class HeadlineController extends Controller
         return response()->json($response, 200);
     }
 
+    public function dashboard()
+    {
+        UserHelper::can(['admin', 'staff', 'bendahara']);
+        $total_user = DB::table('pengurus')->count();
+        $totaluang = DB::table('transaksi')->count();
+        $totalfoto = DB::table('foto')->count();
+        $totalvideo = DB::table('video')->count();
+        $response = [
+            'status'=>'success',
+            'message'=>'Dashboard Data list',
+            'data' => [
+                'pengurus' => $total_user,
+                'transaksi' => $totaluang,
+                'foto' => $totalfoto,
+                'video' => $totalvideo
+            ]
+        ];
+        return response()->json($response, 200);
+    }
+
     public function show($id)
     {
         $head = Headline::findOrFail($id);
@@ -50,6 +73,7 @@ class HeadlineController extends Controller
 
     public function store(Request $request)
     {
+        UserHelper::can(['admin', 'staff']);
         $this->validate($request, [
     		'title'=>'required',
     		'content'=>'required',
@@ -81,8 +105,9 @@ class HeadlineController extends Controller
             return response()->json($out, $out['code']);
     }
 
-    public function update(Request $request)
+    public function update($id, Request $request)
     {
+        UserHelper::can(['admin', 'staff']);
         $this->validate($request, [
     		'title'=>'required',
     		'content'=>'required',
@@ -119,16 +144,20 @@ class HeadlineController extends Controller
 
     public function delete($id)
     {
+        UserHelper::can(['admin', 'staff']);
         $head = Headline::find($id);
-        if(!$head){
-            $data = [
-                "message" => "id not found",
+        $head->delete();
+        if ($head) {
+            $out  = [
+                "message" => "success Delete data",
+                "code"  => 200
             ];
         } else {
-            $data = [
-                "message" => "Delete Success"
+            $out  = [
+                "message" => "failed_delete_data",
+                "code"   => 404,
             ];
         }
-        return response()->json($data, 200, $head);
+        return response()->json($out, $out['code']);
     }
 }

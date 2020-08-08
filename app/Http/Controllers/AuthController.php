@@ -73,6 +73,7 @@ class AuthController extends Controller
                 "code"    => 401,
                 "result"  => [
                     "token" => null,
+                    "username" => null
                 ]
             ];
             return response()->json($out, $out['code']);
@@ -90,6 +91,7 @@ class AuthController extends Controller
                 "code"    => 200,
                 "result"  => [
                     "token" => $newtoken,
+                    "username" => $email
                 ]
             ];
         } else {
@@ -115,5 +117,22 @@ class AuthController extends Controller
         }
         return $str;
     }
-     
+
+    public function logout(Request $request) {
+        $user = User::where('token', $request->token)->first();
+        if ($user) {
+            $user->token = null;
+            $user->save();
+        }
+
+        return response()->json([
+            'status' => 'logged out',
+        ], 200);
+    }
+    
+    public function check() {
+        return response()->json([
+            'status' => 'logged in'
+        ]);
+    }
 }

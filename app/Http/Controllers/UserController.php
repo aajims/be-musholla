@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Gate;
 use App\User;
+use App\Helpers\UserHelper;
 
 class UserController extends Controller
 {
@@ -13,9 +15,10 @@ class UserController extends Controller
         $this->middleware("login");
     }
  
-    public function index()
+    public function index(Request $request)
     {
         // $head = User::orderBy('created_at', 'DESC')->paginate(10);
+        UserHelper::can(['admin']);
         $head = User::orderBy('created_at', 'DESC')->get();
         $response=[
             'status'=>'success',
@@ -24,10 +27,49 @@ class UserController extends Controller
         ];
         return response()->json($response, 200);
     }
+  
+
+    public function updateProfile(Request $request, $id)
+    {
+        UserHelper::can(['admin', 'staff', 'bendahara']);
+        $user = User::where('email', $id)->first();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if (!empty($request->password)) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->telpon = $request->telpon;
+
+        if($user->save()){
+            $response=[
+                'status'=>'success',
+                'message'=>'User Update Profile Success',
+                'code'=> 200
+            ];
+         } else {
+            $response=[
+                'status'=>'Failed',
+                'message'=>'Failed Update Data',
+                'code'=> 404
+            ];
+         }
+        return response()->json($response, 200);
+    }
+
+    public function name($email)
+    {
+        UserHelper::can(['admin']);
+        $user = User::where('email', $email);
+        $response = [
+            'status'=>'Show Data Success',
+            'data' => $user
+        ];
+        return response()->json($response, 200);
+    }
 
     public function show($id)
     {
-        $head = User::findOrFail($id);
+        $head = User::where('id', $id)->orWhere('email', $id)->get();
         $response=[
             'status'=>'Show Data Success',
             'data' => $head,
@@ -88,7 +130,7 @@ class UserController extends Controller
         if($user->save()){
             $response=[
                 'status'=>'success',
-                'message'=>'User created Success',
+                'message'=>'User Update Success',
                 'code'=> 200
             ];
          } else {
@@ -104,16 +146,18 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = User::find($id);
-        if(!$user){
-            $data = [
-                "message" => "id not found",
+        $user->delete();
+        if ($user) {
+            $out  = [
+                "message" => "success Delete data",
+                "code"  => 200
             ];
         } else {
-            $data = [
-                "message" => "Delete Success"
+            $out  = [
+                "message" => "failed_delete_data",
+                "code"   => 404,
             ];
         }
-        return response()->json($data, 200, $user);
+        return response()->json($out, $out['code']);
     }
-   
 }
